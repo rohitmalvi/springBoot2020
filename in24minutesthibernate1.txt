@@ -1,0 +1,147 @@
+JPA :- before jpa we have a jdbc we are writing a lots of query that is becoem  very difficult
+spring ,spring boot, spring MVC they have there own role .
+What is the core problem that the spring framework sollves?
+Most important feature of spring framework is dependency injection. At the core of all spring modules is dependency
+innection or IOC inversion of Control. exaple of dependecny injection is @Autowired. solved boiler plate code problem solve
+spring boot starter web:by using this we can use web app. and restful webservices
+
+Spring boot actuator:add actuator dependency
+to enable actuator all the stuf we are using something inside properties file
+in application.properties=management.endpoints.web.exposure.include=*
+H2:database in application.properties:spring.h2.console.enallbed=true
+verfy that jdbc url has valid->jdbc:h2:mem:testdb
+un: sa ,pass: empty
+first we are understanding by using jdbc:
+in src/main/resources:creating a file data.sql,  
+after restarting application h2 database data also reset  for solving this problem we are writing query manually in data.sql
+in jdbc dao layer using @Repository we are hardcoded query so we are creating a connection into database by using jdbc temlate
+and autowired jdbc template.we have to map what ever data come to persion bean.when query is exicutedd
+you will get result set back, result set we have to map to the persion. in sprnig jdbc we have mapper
+which is map column to bean class.we also have a row mapper. but in this case we are using defalt row mapper
+which is provided by spring called BeanPropertyRowMapper(Persion.class).
+public List<person>findAll(){
+jdbcTempalte.query("select*from persion",
+}
+in main application we are implementing CommandLineRunner which is having a run method we are autowired Dao
+in main calss and inside run method fire a query dao.findAll(); 
+when you are querying for single record you have to use queryyForObject("select * from persion where id=?", requiredType)
+for deleting a recrod in jdbc template we are using Update jdbcTemplate.update. 
+you can create your own custom rowMapper, you have to implement RowMapper<> interface
+JPA repository class: we are using @Repository if you want to use transactional we are using @Transactional
+to connect database we have EntityManager(manages the entities) all the operation you are perfroming in specific session
+all are store in entityManager ,EntityManager is the interace of the @PersistanceContext, entityManager is having a lots of 
+methods.in entity manager for updating and insertng we are using merge method. in entityManager for findAll() method we are
+writing hql(hibernate query language) by definding a query it is using namedQuery. so in entity or model class we are using 
+@NamedQuery(name="find_all_persion", query="select p from Persion p").
+Screen testing after deploying application checking whether functionality working fine or not. unit testing is different
+                                                    JPA in depth
+in any repository what we are able to do. talk to the entity manager
+#Enable H2 console
+spring.h2.console.enabled=true
+#Turn Statistics on
+spring.jpa.properties.hibernate.generate_statistics=true
+loggin.level.org.hhiberate.stat=debug
+#show all queries
+spring.jpa.show-sql=true
+spring.jpa.properites.hiberate.format_sql=true
+logging.level.org.hibernate.type=trace
+
+@Transactional
+you are deleting something which is in not transactional mode. you are removing a data. in find by id there is 
+no problem because you are getting a data but in deleting you are manupulating a data.so you have to do someting called 
+transactional. ex. i want to transfer a money my account to my friend account i want both the condition become sucessful
+detect my money and transfer to my friend account.do everyting or nothing.thats why we are using transactional managment
+unit test for delete method we are using assertNull(). after deleting a record checking it is having null or not.
+in test class we are chnaging a data. so we are using @DirtiesContext it is reset the data.
+entity manager inserting a data by using persist()and updating using merge() method.
+What ever we are updationg, changing entity manager keep traking that one.if we are using updating in test calss it is modified data
+into database or changing data. entity manager keep tranking your method chnagling updating and reflect to db.
+entity manager is having flush(), clear(), detach(), refresh() method
+flush() send out to the database all the method saved into db.save the data into db.
+detach() stop traking application.and not saved into database.you can also use clear() insted of detach() method. 
+refresh() what ever changes done into database are losed.when we are using refresh(course1) it is not saved into db.
+EntityManager is a intreface.
+
+JPQL-> java persistnace query lanugage
+sql querys for a tables but jpql querys for entity, jpql converted to sql query by the jpa imlementation that is hibernate.
+sql query: SELECT * FROM COURSE
+jpql query: Select c From Course c ->c(alias)-> createQuery("Select c from course c).getResultList();
+We have a Query and TypeQuery<> in type querry we are passing a typeTypeQuery<Persion>
+in jpa tabel name are same as class name if you want to use your own table name you can use @Table and also you can use 0
+@Collumn(name = "name");
+@Table(name ="CourseDetails",nullable=false);
+nullable:name cannot have null value.
+
+I want to store the updated time of the row and created time of the row. hibernate provide
+a solution. we have a LLocalDateTime. so  whenever you are using a LocalDateTime row we are
+also using @Updatedtimestamp(hibernate annotaion) and another one is 
+@creationtimestamp
+
+@NamedQuery annotation.
+@NamedQuery(name="query_get_all_courses", query="seect c from course c") in entity class we are using .
+so by using name you can use this query everywhere
+you can not create multiple nameQuery in entity class.but you can create by using array of
+ @NamedQueries ( value ={
+                        @namedQuery(name="quer....."),
+                        @namedQuery(name="query....})
+
+
+Native query:=> we are using jpql which is internally using sql query. but i want to use sql query.entity manager is have
+createNativeQuery("SELECT * FROM COURSE"); method. insede that you can write sql query.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

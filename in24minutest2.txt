@@ -1,0 +1,69 @@
+                                              Junit
+What is unit testing? unit testing for checking a functionality is working as aspecketed. if you are deployee application
+and after you are testing appllication that is called screen testing.unite testing is like we have a multiple method in a 
+class and we are testing one by one each method and some senario you are writing unit testing for group of methods.
+like you have a mehtodd :int square(int n){} checking for squre unit testing is allow to pass the valueand checking whether
+output is writer or not int :squre(3)==9,squre(2)==4,
+@Test-> means this method contian something unit test.
+assertEquals method present into junit test it is checking expectex and acutal is same.
+assertEquals(expected, actural);assertEquals(6,result); you can writer multiplle test for a method.
+assertEquals checks leftHandSide and rightHandSide is writer or not.
+assertTure will check condition is true or not.assertFalse will checks wheter condition is false or not.
+assertNull & assertNotNull checking whether condition is null or not null..
+assertArray checking two arrays are equall or not.
+
+some annotaion in junit.
+@Before
+public void before(){
+System.out.println("Before");
+}
+:-> there is no garenty whitch test is rnning first but it is the garenty before() is runnning before 
+every test.if you want to do something before every test or you want to stablish connection into db so 
+you can use @Before.
+we also have @After which is running after every test.you can do cleaning operation in after method.
+
+we have @BeforeClass and @AfterClass are running before all the method and after all the method only one time.
+                                          Mokito
+Creating a mock using mokito is very simple we can create multiple test very easily
+it is having a mock() staitc method.ex. DataService dataServiceMock = mock(DataService.class); and now you can call anything
+by using reference.
+when() is the static method which is present we allso have thenReturn() which is returning a when data.
+ex. when(dataServiceMock.retrieveAllData()).thenReturn(new int[]{23,15,22}); in this step we are using a constructor.
+mokito annotaion.
+WhenEver you are running a mockito you have to using @RunnWIth annotation before class name then only mokito is working.
+@RunWith(MockitoJunitRunner.class)->starting a mokito.
+@Mock                             @InjectMocks
+dataService dataServiceMock;      SomeBusinessImpl  businessImpl;
+you can give multiple thenReturn() for returning a multiple values you can check multiple assertEquals.
+we have Mokito.anyInt() which is returning when ever integer is there so
+when(listMock.get(Mockito.anyInt())).thenReturn("SomeString");-> in any ineger it will return String.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

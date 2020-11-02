@@ -1,0 +1,209 @@
+                                             Relationships in jpa
+One to one :->@OneToOne-> where every we are using oneToOne in that table only column created..(and added new column 
+become a foregn key and in this column having a id of another column).any one to one relationship is eagar fatch.this will
+give a performance issue if you want only student it will also give passport details this is called eager loading.but how 
+to avoid of doing that.by using fetch=FetchType.LAZY
+@OneToOne(fetch=FetchType.LAZY)now after using this only student query will fiere.but after you are fetching a 
+student.getPassport() you willl get lazy initializatino exception because by that time findById run the transactionoal 
+ends there. The transactional needed to retrieve the detail of getPassport() we need to have a session for solving this 
+problem you have to put before method @Transactioonal annotation.so this is applicable entire test method.Lazy fetching 
+only the get detail when it needed.
+//Session & Session Factory //EntityManager & Persistance Context //Transactioon
+
+Transaction: everyting should succed or nothing is succed. if one operation fail all the changes done into the db should
+rollback that's why we are using transactional.as soon as you defining a @Transactionoal you would also be created called
+Persistance Context. pesrsistnaceContext is a place which all the entity you are operating are pom beaning store.persistance
+context where all the changes that we are doing are capt trac off. persistance context is created at  start of the trancsaction
+and killed as soon as transaction is ended.
+IN HIBERNATE TERMINOLOGY, SESSION=PERSISTENCE CONTEXT
+each entity manager called its own transactional if you are calling student.getPassport(); there is no entityManager no session
+no persistance context.persistance context also give you to database access.
+
+We have a studnet and passport, we are created OneToOne in student we can get passport by using student.this is called unidirectional
+but how can i get student by using passport. we can solved this problem by using one to one relationship in passport.but it is created both 
+side table studentId and passportId. so student having a passport id and passport having a student id. so this is duplication of information.
+so we have a one option one of the entity owning side of entity.either passport of the owning side or student having owning side means either student
+having a passportId or else passport having a studentId.now lets student as owning side of relationship. the way we can
+do that by adding mappedBy="passport" and put name of the variable you are created in student(passport). 
+you are adding mappedBy non owning side of the relationship.
+passport: @OneToOne(fetch=FetchType.LAZY, mappedBy="passport")
+student:@OneToOne(fetch=FetchType.LAZY)
+now this is called by directinal mapping.
+now if you are looking database student table havingg passportId but passport not haveing a studentId.
+@Transactional: only hit the query but not saved until last step if you want to save into db you have to use flush() but 
+after flush also if anyting wrong is happen hibernate rollback everything.
+                                             ManyToOne
+We have course and review. course is having a  muliple review and review is having a one course. how to design database.
+writing a review in course side not a good database design.so we are writing a couse_id in review side.
+in course side we are creating list of reviews. we are creating a OneToMany relationship in course side. and
+in Review side ManyToOne relationship.so review is the owning side the relationship so we are using mapped by at
+course side.
+Course:OneToMany(mappedBy="course")->there is no change
+Review:ManyToOne->its haging a new column=courseId
+OneToMany side of relationship fetch stratagy by defalt ->Lazy.
+ManyToOne side of relationship is alwaay ->eager fetch.
+                                                   ManyToMany
+course and student:course is having a multiple student. and student is having a multiple couse. how to desging database
+if i write studentId in course is bad desgingning or if i write couseId in student that one also not good so in this 
+situation we are using a joins we are creating a join table.
+We are creating a table course_student and inside this table student_id and course_id.
+so in course we are creating a list of student.relationship is manyTOMany
+and same student we are creating a list of student.relationship is manyToMany
+in this situation both table creating a separete table course_student, and student_course.how to fix this.make one of
+the entity as owning side of relationship
+in couse @ManyToMany(mappedBy="coursses"), so student beccome owning side of relationship. and it create Student_courses
+which is having students_id and couserses_id.  if i want table name is different so in owing side(Student) below of maytomany
+i'm using @JoinTable(name="STUDENT_OURSE").//name of the join column and also you can add inverse of join column that is 
+called inverseJoingColum couser_Id
+@JoinTable(name="STUDENT_COURSE",joinColumns=@JoinColuunm(name="STUDENT_ID"),inverseJoinColumns=@JoinColumn(name="COURSE_ID"))
+ManyToMany relationship bydefalt using lazy fetch.
+OneToOne=>eager
+ManyToone=>
+OneToMany=>
+ManyToMany=>eager
+
+MAPING INHERITANCE RELATIONSHIP INTO THE TABLE.
+We have a partTime employee, fllTime employee, and employee. partTime and fullTime extending a employee. which is having a 
+id,name. partTime is having a  Hourly_Wage and fulltime is having a saalary. for mapping inheritance relationShip in a table . 
+the option we looking at single table option.so both parTime and fullTime we are string a single table.
+so  we are using @Inheritacne in Employee table.
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)->single talbe is a defalt stratagy. 
+if we are looking into a table only one table employee is there but two rows are printed.parttime,fullTime.but in table 
+two column hourly_wage, salary and in this forPartime salary=null, fullTime hourly_wage=null that is database integrity.
+all the subclasses add into a single table .
+you can also change tableName employee using @DescriminatorCoolumn(name="EmployeeTypee").
+You have another option inheritance by using Table_Per_Class
+@Inheritacne(strategy=InheritanceType.TABLE_PER_CLASS)-> two table created parTime and fullTime but both table name is 
+common. we have another option also called jjoined.
+@inheritance(strategy=InheritanceType.JOINED):created three table Employee, fullTime, partime. 
+Joined is good for database design there is no duplication of column.
+you have one more last option don't use inheritance use ! @MappedSuperClass it is not allowed entity but it's behave like
+entiy. it is also create two table.
+JPQL queryies using relationship:querys are very similar sql
+criteria query API: In this criteria query we are not using sql, and jpql type of query. you are avoiding qurey. in this
+situation you are using a java based statemet to create a query same as sql, jpql query but insted of using query we are
+writing a java code to manupulate database data.
+TransactionManagment:
+ACID properties:
+A->Atomicity->completely successful or all the changes done by the transaction will be rollback
+c->Consistency->ex. the sum of a and b acount same after transacction.irrispective of whether it is sucess or fail.
+i->Isolation->ex. if a is updating a transaction in between trnasaction b will see the updation of a account.
+d->Durability->ex. if the transaction completed sucessfull even system crashes anyting happen the data should be persistat.
+
+Spring data jpa:-> jpa is having a sort
+Sort sort = new Sort(Sort.Direction.ASC, "name");
+Paginatioon:->PageRequest pageRequest  = PageRequest.of(0, 3);
+Page<Course> firstPage=reposiotyr.finaAll(pageRequest);
+
+Making a repository as rest you have to add sprig data rest dependency. also you have  to use 
+@RepositoryRestResource(path="courses"). if you try to retreve a courses it comes as infinite loop for  solving this 
+problem. you have to use @JsonIgnoe below manyToMany relationship.
+
+                        Caching with Hibernate & Jpa
+When you are firing a request multiple queryiew are fire. instead of everytime hitting a dababase  we are storing data
+in cache.in hibernate two  type of cache is there
+persistanceContext->firstLevelCache->SecondLevelcache->database
+everyTransaction is having it's own persistnaceContext. in your transaction you are retreving a data again and again
+its not hitting everytime database its storing into persistenceContext. now first level cache come into picture.first
+level catch within the single transaction.The second level cache come into picture across multiple transactions.ex.
+you have a one instance of the application deployed into applicaiton or web server.and multiple users are using this
+irrispective of user the list of state or country are the same.state or country does not change of the user.we can add
+such information in second level cache.second level cache stores the common information of the application.
+Transaactioon goes to the persistance context(first level cach) no having data, go to second level cache not having data,
+go to database and store information according to the condition.
+using a firstLevel cache:@Transactions
+using a secondLevel cache:you must have a configuration you have to tell what data not has been changing multiple transaction.
+add a dependency of ehCache
+<groupId>org.hibernate</groupId>
+<artifactId>hibernate-ehcache</artifactId>
+appplication.properties
+#second level cache -Ehcache
+#1. enable second level cache
+spring.jpa.properties.hibernate.cache.use_second_level_cache=true
+#2.specify the caching framework - EhCache
+spring..jpa.properties.hibernate.cache.region.factory_class=org.hibernate.cache.chcache.EhCacheRegionFactory
+#3. only cache what i tell to cahce.
+spring.jpa.properites.javax.persistence.sharedCache.mode=Enable_Selective
+#What data to cache?
+use @Cacheable before className
+
+HinbernateTipe:->
+isDeleted-> creating a field in model->soft delete
+@SQLDelete(sql="update course set is_deleted=true where id=?")-> using in model
+@Where(clause="is_deleted = false")-> using in model
+@PreRemove->@Where is not applied native query in this situation you have to use PreRemove anonotaioon.
+
+@Embeddable
+Student having a address . you are creaed seperate class address but you don't want to use mapping you want address
+present for another class also. so you can use @Embeddable in address class annotaion and student class you can use
+@Embedded before Address field .
+
+@Enumerated:you can use this annotaion into enum.its's having a problem it is using a ordinal which is using a integer. 
+which is having a specfic position if you are adding and removing its having a problem not good database desging.
+@Enumerated(EnumType.STRING) it is storing as a string. in this if you are adding its not affected earliear row.
+
+When do you use jpa:
+sql database
+static domain model
+mostly curd
+mostly simple queries/mappings.
+don't use in batch operation.
+
+PERFORMANCE TUNING:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

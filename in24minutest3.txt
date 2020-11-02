@@ -1,0 +1,261 @@
+we are using a @RestController for  creating a controller.@RequestMaping("/welocome") we are mapping a /welcom into 
+rest controller.@Component (or) @Service is telling a spring this is the compenent you have to maintain this. and whenever
+you needed this class to another class you have to use @Autowired..
+@SpringBootApplication is automatically do comonent scan for spacific package.
+@SpringBootApplication ,@ComponentScan on current package
+@Repository is related to the data layer.
+web jar all the auto configuation stuff is configured in web.if you are looking inside package it is autoconfigure 
+error, viewResover, defalt mesg converter,dispatcherServlet, filters. when application is start it also looking 
+application.properties logging.level:Debug
+
+Spring. spring is just a dependency injection framework. Spring focuses on the "
+Spring Boot vs Spring
+What Spring Boot is Not!
+Spring Boot vs Spring
+Spring
+Spring is just a dependency injection framework. Spring focuses on the "plumbing" of enterprise applications so that teams can focus on application-level business logic, without unnecessary ties to specific deployment environments.
+First half of the 2000 decade! EJBs
+EJBs were NOT easy to develop.
+Write a lot of xml and plumbing code to get EJBs running
+Impossible to Unit Test
+Alternative - Writing simple JDBC Code involved a lot of plumbing
+Spring framework started with aim of making Java EE development simpler.
+Goals
+Make applications testable. i.e. easier to write unit tests
+Reduce plumbing code of JDBC and JMS
+Simple architecture. Minus EJB.
+Integrates well with other popular frameworks.
+Applications with Spring Framework
+Over the next few years, a number of applications were developed with Spring Framework
+Testable but
+Lot of configuration (XML and Java)
+Developing Spring Based application need configuration of a lot of beans!
+Integration with other frameworks need configuration as well!
+In the last few years, focus is moving from monolith applications to microservices. We need to be able to start project quickly. Minimum or Zero start up time
+Framework Setup
+Deployment - Configurability
+Logging, Transaction Management
+Monitoring
+Web Server Configuration
+Spring Boot
+Spring Boot makes it easy to create stand-alone, production-grade Spring based Applications that you can “just run”.
+We take an opinionated view of the Spring platform and third-party libraries so you can get started with minimum fuss.
+Example Problem Statements
+You want to add Hibernate to your project. You dont worry about configuring a data source and a session factory. I will do if for you!
+Goals
+Provide quick start for projects with Spring.
+Be opinionated but provide options.
+Provide a range of non-functional features that are common to large classes of projects (e.g. embedded servers, security, metrics, health checks, externalized configuration).
+What Spring Boot is NOT?
+It’s not an app or a web server
+Does not implement any specific framework - for example, JPA or JMS
+Does not generate code
+
+The way we are defining path variable in the uri {}=>{serveyId} open anc close brases "/serveys/{surveyId}/questions"
+retrieveQuestions(@PathVariable String surveyId)
+Jackson data bind: one of the most popular framework converting a json to object object to json.
+spring boot create a message converter for json
+Rest-> Representation state transfore .
+Each service should be stateless.
+
+@Request body:->The content of request which is json formate directly map which is alerady in json formate.
+addQ(@Pathvariable String surveyId, @ReuestBody Question newQuestion)
+
+creating a URI:-> servletUriComponentsBuilder component is one of the utility classes which is build a uri .
+URI location = servletUriComponentsBuilder .fromCurrentRequest().path("/{id}").buildAndExpand(question.getId()).toUri():=> from the
+current request add into the path /id and use the question. after creating a object you have to return status
+Status-> we have one of the utility classes ResponseEntity which is have a method this is hepling us to create status.
+Status->return ResponseEntity.created(location).build(); this is return a status of response entity and 
+ also change to return type of the method.
+if content is null then you have to send different status 
+return ResponseEntity.noContent().build();  
+Content Negotiation:->service requester tells service provider what type of response i accept. the client asking server
+specific formate and server can responding back whetehr it providing or not.
+we have a dependecny jacksoDataFormat which is convet xml to json and json to xml .
+<dependency>
+<groupId>com.fasterxml.jackson.dataformat</groupId>
+<artifactId>jackson-dataformat-xml</artifactId>
+</dependency>
+
+Spring boot Actuator=> monitoring a application
+HAL Browser=> providing a ui spring boot actuator:=>http://localhost:8080/actuator/ 
+after adding a dependency type this url.HAL browser is a way where you are exposes your services. so hal brower is a 
+basically kind of ui where you can browse your all rest services.
+actuator is havin a real, self, heapdump, dump, configprops, autoconfig, trace, info, health, mappings, metrics, env, beans
+beans:if you choosing beans you  can find all the beans you are created in your application
+heapdump:you can find debug kind of problems
+configprops:is shows what you are configured in application.properties
+
+Embedded servlet containers>defalt tomcat,if you want to user another contianer you have to exclude tomcate and you can 
+add anoter continaer like tomcat, jetty ,undertow.
+spring boot comes for three embeded container tomcat, jetty ,undertow.
+
+how to use any msg for application.properties file?-> we have a @Value annotaion which is autowired any massage 
+properites file into our service. 
+inside properties file :welcome.message=Welcome message from property file!
+inside service class
+@Value("${welcome.message}")
+private String welcomeMessage;
+here you are autowired "welcome.message" properties file value in srevice bean.
+PlaceHolder:=> in properties file you can user place holder like ${app.name}
+app.name=in28Minutes
+But in this situation if you have lots of message or values like value, msg, number then you are everytime autowiring
+that value that is difficult so insted of using @value we are using a BasicConfiguration, in basicConfiguration we are 
+using @ConfigurationProperties("basic"). so you can autowired BasicConfiguration, class and you can directly use that properites.
+mpa.pur("message",configuration.getMessage());
+ex. you are created one class BasicConfiguration and in this class you have some value like value,msg,number
+and in this you are using @ConfigurationProperties("basic") so you can call basic.value, basic.messge, basic.number.
+but how can you are passing a data in value, message, and number by using properties file.
+welcome.message=Welcome message from property file! Welcome to ${app.name} :0> this is called place hodler.
+in application.properties you can use : or = both..
+YAML file:application.yaml is more readable
+logging:
+  level:
+    org.springframework: INFO
+    org.springframework.web.servlet: INFO
+
+Profiles:->you can use profile in application.properties file .
+           spring.profiles.active=prod
+how can use you have active profile prod?=> you have to create file name as application-prod.properties so prod is 
+having a most profrences prod is exicuted.if you want to use (dev) you can change prod to dev then dev is executed.
+you can also use profile for creating a bean.
+ex. @Profile("dev")
+    @Bean
+    public String dummy() {
+    return "somethign";
+    }
+}
+according to  requierement it is taking bean.
+
+Jpa-> java persistance api: maps an object into dababase 
+after adding jpa dependency and you are started runing application it is giving error because it is trying
+to auto configure the database..
+H2: we have a embeded databasse h2 it directly run in the main memory.
+for using a h2 db you have to add dependency. 
+@Entity means a Table, @Id is a id of table, @GeneratedValue(strategy=GenerationType.AUTO) it is telling 
+to jpa generate a id automatically
+commandLineRuner:->we can save the data by using a command line runner. it has to implement CommandLineRunner
+and also add the unimpleneted method run(){}. so as soon as server started all the beans done all the mapping
+are done afer that spring boot launch command line runner after server started it is printed value in consele.
+
+H2 Console: http://localhost:8080/h2-console
+URL: jdbc:h2:mem:testdb
+userName: sa
+password: empty
+H2 database is avialble until application up and running. when server is stop our application is also stop.
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+repository:we have curdRepository,jpaRepository curdRepository provides all the basic methods.we also have
+PagingAndSortingRepository it proide lots of method  
+spring data jpa dependency:
+<dependency>
+     <groupId>org.springframework.booot</groupId>
+     <artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+spring data rest dependency:
+<dependency>
+     <groupId>org.springframework.booot</groupId>
+     <artifactId>spring-boot-starter-data-rest</artifactId>
+</dependency>
+while using Rest we are using a @RepositoryRestResource annotaion.
+@RepositoryRestResource(path="users", collectionResourceRel="users") 
+now you can use all the services get, post....
+now you can use paging and sorting repository ?size=4
+in a rest service we can have helpful links those are called as Hypermedia as Representation of appplication state(hateos)
+link.so when every you want  next and prev you just have to click that link (pagination).yo can also use sort, sort=name,desc
+it is shorting name by desending order.if you want to expose any method as rest repository you have to do given parameter
+name to this using @param :List<useer> findByRole(@param("role")String role);
+spring boot unit testing / inteeration test:
+integeration test for  service:so we are using one of the api and looking that is working fine or not.
+in integeration test we will test all the things together in unit test we are testing controller or service or the just 
+databasse part.besfore that you have to maake sure in dependency you have spring boot starter test this is helping you to
+writer unit test.
+Spring Data jpa: if i use findBy{Column_name}. then spring data automatically going and serch by column name using the 
+parameter which is pased in. that is one of the featcher of spring data jpa
+There is two part of writing a unit test
+part1:-> initialize and launch of the spring context to run with springRunner, SpringRunner is a class
+one of the utility classes or junit runner is present  that could launches springRunner helps launch a spring Context
+@RunWith(SpringRunner.class) once springRunner configure we have to launch
+we have SpringbootTest which is launch the application this server running multiple application which is using a random port
+so the way we are using random port by using webEnviroment it is using random port. so in this we have a annotation we can
+use a port :@LocalServerPort--> print int port; 
+so inviornment we are using Random_port it is dynamically inject the port
+@SpringBootTest(classes =Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@LocalServerPost 
+private int port;
+part2:-> caling a url and check whether response commigng back as aspected or not
+invoke the url /serveys/servey1/quetions/quesition1. TestRestTemplate is a utility class of spring boot.
+assign url into String.
+TestRestTemplate is very useful calss for invoking a rest url.you want to send a get method now you can return a url. 
+TestRestTemplate restTemplate = new TestRestTemplate();
+String output = restTemplate.getForObject(url, String.class);//we are getting a xml response back
+sout("responnse :" + output);
+restTemplate we are getting a xml response how. how to write test for application json by using containt negotioan. we are 
+passing a accept headder application/json. the way of passing hadder by using httpEntity -Headers(coponent) what ever we are
+getting responnse assign into 
+HttpEntity entity = null;//create
+ResponseEntity<String> response =restTemplate.exchange(url, HttpMethod.get, entity, String.class);
+json assert:-it is the utility which is the part of spring boot
+assert is using only two parameters. and jsonAssert is using threee parameters.
+JSONAssert.assertEquals("{id:1}",{id:1,;name:ranga}", false);
+                      //expected , actural,            false(mostof the time we are using false)
+json assert is a framework it is useful  to write test that is return json.
+
+difference between unit test and integeration test
+unit test
+@MockBean:insteand of using autowired use @MockBeand it is autowire surveyService into your test class.it is most faster
+compater to anoter test because it is launches only one class ,only one bean
+for creating a request by using MockMvcRequestBuilders.get(URl).accept(MediaType.Applicaion_JSON);
+
+Spring Sequrity:-> 
+authentication:->This user id password i have valiate to me.
+authorization:->what accest do you have.
+defalt usernaem & password: user & go too log and check
+in postMan:->Authorization - Basic Auth
+Configure different user roles for  survey and other services:
+create config class:
+use @Configuration: 
+extends WebSecurityConfiguraAddapter
+1. in memeory autohntication
+configure(AuthenticationMannagerBuilder auth) 
+auth.inMemoryAuhentication().withUer("user1").password("securet1")
+          .roles("USER").and.withUser("admin1").password("secret1")
+          .roles("user","ADMIN");
+//basic Authorization
+authorized a request: if anythign have survey name to link :give user acce we are using ant matcher
+.antMatchers("/surveys/**").hasRoole("USER")
+.antMatchers("/users/**").hasRole("USER")
+.antMatchers("/**").hasRole("ADMIN")//access anyting
+.and.scrf(0.disable()
+.headers().frameOption().disable();
+ by using a integration test sirng security started giving error for resolving this problem we are using
+ HttpHeaders headers = createHttpHeaders("user1","secret1");//creating a method
+for disable a security in unit testing you can use secure = false
+@WebMvcTest(value=SurveryController.class,  secure=false)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

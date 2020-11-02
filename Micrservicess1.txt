@@ -1,0 +1,189 @@
+                                                          Microservices
+In shor, the microservice architectural style is an approach to developing a single application as a suite of small 
+services, each running in its own process and communicatioong with lightweight mechanisms, often an HTTP reource API....
+contd.
+small autonomous services that work together -Sam Newman
+These services are built around business capabilities and independently deplloyable by fullly automated deployment 
+machinery...contd
+                                   MICROSERVICES
+Advantages of microservicess:->new technology  & process adaption,dynamic scaling,faster release cycles.
+
+Limits Service 8080,8081,..
+Spring Clloud Config Server 8888
+Currency Exchange service 8100, 8001,8002,...
+Currency Conversion Server 8100, 8101, 8102, ...
+Netflix Eureka Naming Server 8761
+Netflix Zuul API Gateway Server 8765
+Zipkin Distributed Tracing Server 9411
+
+centeralize micrservice configaration:-each micrservice is having a multiple environment. managing the configuration
+individually for each application each environment is a very difficult think and thats where centeralize config come 
+into picture.
+spring cloud config server says:you put your all configuaration into git repository and i woulld take care of managing 
+a configuration  and provindg into the specific micro service.
+if limitsService says i want dev env. springCloudCongifServer provide it
+if anotherService says i want other env. springCloudCongifServer provide it
+springCloudConfigServeer act as centeralize microservice config serveer. 
+you have to put all the configuration different enviroment in a git repository.and you cna connect springClouldConfigServer
+into git repository.and it can be serve the configration based on the different needs of the different instancess in diff.
+enviornment for all the micrservicess.
+
+currentcyCalculationService - CurrencyExchangeService - LimitsService
+                              SpringClouldConfigServer
+                                       git
+
+  ===============================================================
+                               currencyCalculationServce
+                                   Ribbonn=>NamingServer
+ CurrencyExchangeService1    CurrencyExchangeService1     CurrencyExchangeService1
+
+
+                              Ribbon Load balancing
+in previous step we are configured ribbon we made ribbon load two instences of the CurrencyExchangeService
+what ever service comming from currencyCalculationService we will be able to use ribbon and distribute 
+currencyExchangeService1 and currencyExchangeService2 which one is running 8000, 8001 respectivly.lets 
+assume you will start currencyExchangeService3 and launch it up 8002 will ribbon load to it right now think 
+about to is .you have to add to the configuration you need to chnage application configuration when ever 
+new server is created.that is not good. 
+        so what i want to do based on the load i want to increase and decrease the number of the servicess
+i want to dynamicaly increase and decrease currencyExchangeSeviceses thats were NamesServer comes in.
+
+    CurrencyCalculationService    currencyExchangeService      limitsService
+                                    EurekaNamingServer
+all the microsevices register EurekaNamingServer
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+M1-M2-M3-M4-M5=> Instead of developign one monolithic we are building set of microservices
+Spring cloud:->there is wield verity of project insdie the umbrela of spring cloud. one of the important project is
+spring clud netflix: integreation with various netflix oss components(Eureka, Hystrix, Zuul, Archaius, etc.)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

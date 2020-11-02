@@ -1,0 +1,204 @@
+spring notes 
+we have a spring initializer for creating a srping project
+POM.xml-> roject object model
+group id is your project name
+artifact id is your application name
+
+@SpringBootApplication initializes spring(component scan) and spring boot (Auto configuraiton)
+
+SpringApplicaton.run launches a spring boot applicatoin
+
+spring boot giving defalt error page (Whitable error page)
+
+spring boot framework bascially looks 4 annotatin 
+for making a controller one annotaion is a @Controller
+
+for mapping a url we are using @RequestMapping("/login");
+
+@Controller annotaion pick up the method as requestMapping
+
+bydefalt spring  at logging lavel is info it is not printing complete information so we want more informatioon
+so we will change logging level as debug mode that is printing more log information so insted of changing 
+complete application we will change only web.
+loggging.level.org.springframework.web: DEBUG
+
+like we have a login controller and we have request mapping url"/login" and one method logginMessage()
+We have a dispatcherSrvlet which one is doing mapping
+/login mapped to the login controller so that basically dispatcherServlet does
+dispatcherServelet rediect message to logginController/loginMessage() method and it print message hello world
+so after getting "hello world" dispatcher servlet looking a view or jsp so it is not finding anything then 
+it is printing error page. os what i want it is not lookng view it go /login and print whatever value i given 
+so we have a simple annotation called @ResponseBody before method then it is printing a message.
+
+what is happining in a background. whenever you are typing anyting into the browser, browser creates a request it goes to 
+the server, server takes the request handle it and sends a response back, and response would be handle browser if response
+is html it is printing a response as beautiful if it is simple text it is printing a text.
+
+spring boot provides embeded tomcat server
+devtool automatically relaunch out application wehen ever anymodification is happenig our application it is relauch our 
+application what happen it is keep monitoring our package and whenever somthign change it is relaunched application it is 
+always using dynamic part of the application no a static part.
+java is good for writing business logic or controller login. for writing a html ,jsp view java is not write place.
+we can create a jsp -/src/main/webapp(folder)/WEB-INF(folder)/jsp(folder)/login.jsp
+WEB-INF (folder)is the most secure way of creating a jsp
+
+we are returning a /login in our method. what is happen because of @ResponseBody it directly goes to the browser
+so remove @ResponseBody and request again. it again giving error now viewResolver come into the picture
+dispatcher servelet don't know the our jsp path so in applicaiton.properties we are specifing the path of jsp
+src/main/webapp/WEB-INF/jsp/login.jsp
+"login"=>/WEB-INF/jsp/login.jsp
+we are using prefix and suffix
+spring.mvc.view.prefix=/WEB-INF/jsp/
+spring.mvc.view.suffix=.jsp
+we have to provide one extra dependency
+
+To enable jsp support in embedded tomcat server!
+<dependency>
+<groupId>org.apache.tomcat.embed</groupId>
+<artifactId>tomcat-embed-jasper</artifactId>
+<scope>provided</scope>
+</dependency>
+
+we are using @RequestParam for passing a message along with url that time we are using requestParm
+@RequestParam String name
+name is printing only controller level but if you wnat to pint as view level you have to use Model
+Model is used to pass data from Controller to view(jsp) i have to put name into to model and sended 
+into the login.jsp that is how we are passing data controller to  view. we are using ModleMap
+(ModelMap model), model.put("name",name); for using into inside jsp we are using ${name}
+
+DispatcherServlet is called front controller any request comes into to the web application will
+first go the dispatcher servelet.controller puts data into a model so we have a controller and view 
+now controller says to view resolver someone asking me "/login" what i do.so view resolver goes to the 
+application.properties file it has suffix and prefix so viewResover redirect model to jsp page.
+
+by default any form usage a get method
+GET Method is not secure!
+if you are sending a request then username and password it is visible into the browser url. 
+so you have to use post method then username and password is not visible into the borwser url.
+POST Method is more secure. any sensitive information is sending as a part of post method.
+
+but using get and post after submitting a request in console you are getting a same response why because
+in controller @RequestMapping("/login") if you are not specifing type it will be use all type 
+like /get, /post, /put, /delete so how can we avoid that by using type RequestMethod
+@RequestMapping(value="/login", method=RequestMethod.post)
+
+so now you have to create a seperate method of post if you tryping to submiting a form using 'get' it is 
+giving 405 error page.
+
+if i want name is comming into the request parameters(ModelMpa ode, @RequestParam String name)
+
+Dependency injection:=> for using a dependency injection we have to manage two things first is in service class we 
+have to configure annotatioon like @Component and second thing is in controller we have to autowired a servie
+@Autowired
+LoginSrvice sevice;
+@Component-> it automatically create a bean of that particular class.
+you can use 
+@Component, Service, Repository, Controler
+@Service-> using for writing a business logic
+@Repository-> is used at saving a data into a database
+@ComponenetScan-> in main application we have @SpringBootApplication which is inernally using componentScan. it is searching 
+as package wise if you are creating a different package and trying to autowired it is giving error.
+
+Fornt Controller-> handles data binding, handle mapping, view Resolvers and a lot of other functionlality.
+Browser sends a request to front controller, frontController decideds to talk controller after request goese 
+to model, model send response back to controller , then controller taks to view.
+
+Session vs Model vs Request.
+The scope of the request parameters is just that perticular request.
+Session is the way you will be store values acros multiple request.for using session in controller class we have to use 
+@SessionAttributes before class name.and what every you want to access you have to give name @SessionAttribute("name").
+The request in model bydefalt ALL
+http-> is basically a stateLess protocall so http request and response do not store any state.
+so on the server side we are creating a session if you want to store value acros request then we are store in session if 
+your application have millions of user if you have lot of data in your session then the amount of memory need your server
+is would be huge you have to very causious while puttinig value into your session.
+
+SpringSecurity:->@Configuration is a spring configuration witch one helps to add more configuation
+for adding a security we are extending WebSecurityConfigurAdapter for applying a security.
+
+Eception Handling(cross cutting cunsern)->@Controller("error")
+@ExceptionHandler(RuntimeeException.class)
+                                       Junit in 5 steps
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
